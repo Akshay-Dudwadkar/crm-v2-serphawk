@@ -84,7 +84,7 @@ bash scripts/build_push.sh
 bash scripts/deploy.sh
 ```
 
-The deploy script runs only `python create_tables.py`. It never runs the legacy migration, cleanup, force-fix, or force-migrate scripts. The optional safe admin seed requires `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` of at least 12 characters and is run manually with `python seed_db.py` inside the backend container.
+The deploy script runs only `python create_tables.py`. It never runs the legacy migration, cleanup, force-fix, or force-migrate scripts. The optional safe admin seed requires `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` of at least 12 characters and is run manually with `python seed_db.py` inside the backend container..
 
 ## Environment variables
 
