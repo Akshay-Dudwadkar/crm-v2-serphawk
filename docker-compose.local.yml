@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: crm
+      POSTGRES_USER: crm
+      POSTGRES_PASSWORD: crm_local_password
+    volumes:
+      - postgres_local_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crm -d crm"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://crm:crm_local_password@postgres:5432/crm
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      SECRET_KEY: ${SECRET_KEY:-local-development-secret}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-local-development-jwt-secret}
+      SENDER_EMAIL: ${SENDER_EMAIL:-}
+      SENDER_PASSWORD: ${SENDER_PASSWORD:-}
+      EMAIL_SENDER: ${EMAIL_SENDER:-}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./static/uploads:/app/static/uploads
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_local_data:

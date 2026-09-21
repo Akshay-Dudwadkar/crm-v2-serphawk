@@ -1,0 +1,12 @@
+flowchart LR
+    B[Browser] --> IP[Elastic IP]
+    IP --> N[Nginx on Ubuntu EC2 t3.micro]
+    N -->|/| F[Next.js container :3000]
+    N -->|/api/ -> /| A[FastAPI container :8000]
+    A --> DB[(Private RDS PostgreSQL 16 db.t3.micro)]
+    ECR[(Amazon ECR)] -->|IAM ECR read-only role| EC2[EC2 Docker host]
+    EC2 -. contains .-> N
+    EC2 -. contains .-> F
+    EC2 -. contains .-> A
+    SG1[EC2 SG: 80/443 public, 22 admin CIDR] -.-> N
+    SG2[RDS SG: 5432 from EC2 SG only] -.-> DB
