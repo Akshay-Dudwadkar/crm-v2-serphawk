@@ -11,6 +11,7 @@ variable "project_name" {
 variable "my_ip_cidr" {
   type        = string
   description = "Your public IPv4 address in CIDR form, for example 203.0.113.10/32."
+  default     = "YOUR_CURRENT_IP/32"
 }
 
 variable "key_name" {
